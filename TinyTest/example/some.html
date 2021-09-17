@@ -1,0 +1,128 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// function signature 
+
+// arr.some(callback(element[, index[, array]])[, thisArg])
+
+// parameter every: array, callback, thisArg
+// parameter callback: currentElement, index, originalArray
+// Returns a boolean value 
+
+// true if the callback function returns a truthy value for at 
+// least one element in the array. Otherwise, false.
+
+// Expecatations:
+
+// 1. It should run callback array.lenght times on false element
+// 2. It should run callback on the currentElement in the array
+// 3. It should run callback on the index of the array
+// 4. It should run callback on the original Array
+// 5. It should run the optional the argument
+// 6. It should execute the callback function once for each element in the array until callback returns a truthy value 
+// 7. It should execute the callback only on assigned values
+// 8. It should not mutate the array that it is called upon
+// 9. It should not run callback on appended elements that the callback added after every was called
+// 10. It should not run callback on deleted elements
+
+function some(array, callback, thisArg) {
+    someCallback = callback;
+    length = array.length
+
+    if (thisArg) {
+      someCallback = callback.bind(thisArg);
+    }
+
+
+    for (var i = 0; i < length; i++) {
+      if (i in array) {
+        if (someCallback(array[i], i, array)) {
+          return true;
+        }
+      }
+    }
+ return false;
+}
+
+
+tests({
+
+'It should run callback array.lenght times on false element and return false': function () {
+    var callbackHasRun = 0;
+    var returnFalse = some([1, 2, 3], function (currentElement) {
+        callbackHasRun++;
+    });
+    eq(callbackHasRun, 3);
+    eq(returnFalse, false);
+},
+'It should run callback on the currentElement in the array': function () {
+    some([1], function (currentElement) {
+      eq(currentElement, 1);
+    });
+},
+'It should run callback on the index of the array': function () {
+    some([1], function (currentElement, index) {
+      eq(index, 0);
+    });
+},
+'It should run callback on the original Array': function () {
+    testArray = [1, 2, 3];
+    some(testArray, function (currentElement, index, originalArray) {
+      eq(testArray, originalArray);
+    })
+},
+'It should run the optional the argument': function () {
+    some([1], function () {
+      eq(this.description, 'I am the optional tihs argument')
+    }, {description: 'I am the optional tihs argument'});
+},
+'It should execute the callback function once for each element in the array until callback returns a truthy value ': function () {
+    var callbackHasRun = 0;
+    var falseArray = [1, 2, 3];
+    var returnTrue = some(falseArray, function (currentElement, index) {
+      callbackHasRun++
+      return currentElement > 1;
+    });
+    eq(callbackHasRun, 2);
+    eq(returnTrue, true);
+},
+'It should execute the callback only on assigned values': function () {
+    var callbackHasRun = 0;
+    var testArray = [1, , , 4];
+    var unassigneCallback = some(testArray, function (currentElement) {
+      callbackHasRun++;
+      return currentElement > 4;
+    })
+    eq(callbackHasRun, 2);
+    eq(unassigneCallback, false);
+},
+'It should not mutate the array that it is called upon': function () {
+    var testArray = [1, 2, 4];
+    some(testArray, function () {});
+    eq(testArray[0], 1);
+    eq(testArray[1], 2);
+    eq(testArray[2], 4);
+},
+'It should not run callback on appended elements that the callback added after every was called': function () {
+    var testArray = [1, 2];
+    var callbackHasRun = 0;
+    some(testArray, function(currentElement) {
+     callbackHasRun++;
+     testArray.push(3);
+     return currentElement === 3;
+    });
+    eq(callbackHasRun, 2)
+},
+'It should not run callback on deleted elements': function () {
+    var testArray = [1, 2, 3];
+    var callbackHasRun = 0;
+    some(testArray, function (currentElement, index) {
+      callbackHasRun++;
+      testArray.splice(0, 1);
+    });
+    eq(callbackHasRun, 2);
+    
+},
+});
+
+</script>

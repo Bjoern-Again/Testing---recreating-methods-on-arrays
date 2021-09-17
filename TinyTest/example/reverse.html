@@ -1,0 +1,72 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// function signature 
+
+// a.reverse()
+
+// parameter shift: array, reverse
+
+// The reversed array.
+
+// Expextations
+
+// 1. It should mutate the original array not copy it
+// 2. It should reverse the elements in the array
+// 3. It should thrown error when not applied to arrays
+
+
+function reverse(array) {
+
+    if(Array.isArray(array) === false){
+      throw new TypeError('array.reverse is not a function')
+    }
+
+    var length = array.length;
+    var endIndex = array.length - 1;
+    var secondLastIndex = array.length - 2;
+
+    for(var i = secondLastIndex; i >= 0; i--) {
+      array[array.length] = array[i];
+    }
+
+    for(var j = 0; j < array.length; j++) {
+      array[j] = array[j + endIndex];
+    }
+
+    array.length = length;
+
+    return array;
+}
+
+
+
+
+
+
+
+tests({
+    'It should mutate the original array not copy it': function () {
+        var testArray = [1]
+        var reverseArray = reverse(testArray)
+        eq(testArray, reverseArray)
+    },
+    'It should reverse the elements in the array': function () {
+        var testArray = [1, 2, 3];
+        reverse(testArray)
+        eq(testArray[0], 3)
+        eq(testArray[1], 2)
+        eq(testArray[2], 1)
+    },
+    'It should thrown error when applied to non array elements': function () {
+        var testElement = 1;
+        var isTypeError = false;
+        try {
+          reverse(testElement)
+        } catch(e) {
+          isTypeError = (e instanceof TypeError)
+        }
+        eq(isTypeError, true)
+    }
+});
+</script>

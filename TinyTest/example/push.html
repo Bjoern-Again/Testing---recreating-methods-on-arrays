@@ -1,0 +1,86 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// function signature 
+
+// arr.push([element1[, ...[, elementN]]])
+
+// parameter lastIndexOf: array, element
+
+// Returns: The new length property of the object 
+// upon which the method was called.
+
+// Expextations
+
+// 1. It should return the lenght of the array when nothing is pushed
+// 2. It should return the new lenth of the array when value is pushed
+// 3. It should be used with call() or apply() on object resembling arrays
+// 4. It should treat holes like values
+// 5. It should treat strings as values
+// 6. It should treat booleans as values
+// 7. It should empty as 0 value when a value is added it becomes 1
+
+function push(array, element) {
+
+   var length = array.length
+
+    if(array.length === 0) {
+      array.length = element;
+    }
+
+    if(element === false) {
+      array.splice(array.length, 0, false); 
+    }
+
+   for(var i = 0; i < array.length; i++) {
+     if(element) { 
+     array[length] = arguments[i];
+     }
+   }
+
+  return length;
+}
+
+
+tests({
+    'It should return the lenght of the array when nothing is pushed': function () {
+        var myArray = [1, 2];
+        push(myArray) 
+        var length = myArray.length;
+        eq(length, 2)
+    },
+    'It should return the new lenth of the array when value is pushed': function () {
+        var myArray = [1, 2];
+        push(myArray, 3) 
+        var length = myArray.length;
+        eq(length, 3);       
+    },
+    'It should be used with call() or apply() on object resembling arrays': function () {
+      fail();
+    },
+    'It should treat holes like values': function () {
+        var myArray = [,,];
+        push(myArray, 3) 
+        var length = myArray.length;
+        eq(length, 3);       
+    },
+    'It should treat strings as values': function () {
+        var myArray = ['a', 'b'];
+        push(myArray, 'c') 
+        var length = myArray.length;
+        eq(length, 3);       
+    },
+    'It should treat booleans as values': function () {
+        var myArray = ['a', true];
+        push(myArray, false) 
+        var length = myArray.length;
+        eq(length, 3);       
+    },
+    'It should empty as 0 value when a value is added it becomes 1': function () {
+        var myArray = [];
+        push(myArray, 1) 
+        var length = myArray.length;
+        eq(length, 1);       
+    }
+});
+</script>

@@ -1,0 +1,63 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// function signature 
+
+// arr.unshift(element1[, ...[, elementN]])
+
+// parameter shift: array, element
+
+// The new length property of the object upon which the method was called.
+
+// Expextations
+
+// 1. It should shift the value at consecutive indexes down
+// 2. It should return the removed value
+// 3. If the length poperty is 0 undefined is returned
+// 4. It should be usd with apply to object resembling arrays
+
+
+function shift(array) {
+
+	var firstElement = array[0];
+
+    if(array.length === 0) {
+      return undefined;
+    }
+
+	for (var i = 0; i < array.length; i++) {
+      array[i] = array[i + 1];
+    }
+  
+    if (array.length > 0) {
+      array.length--;
+    }
+
+	return firstElement;
+}
+
+
+
+tests({
+    'It should shift the value at consecutive indexes down': function () {
+        var theArray = [1, 2, 3];
+        shift(theArray)
+        eq(theArray[0], 2)
+    },
+    'It should return the removed value': function () {
+        var theArray = [1, 2, 3];
+        var firstElement = theArray[0];
+        shift(theArray)
+        eq(firstElement, 1)
+    },
+    'If the length poperty is 0 undefined is returned': function () {
+        var theArray = [];
+        var firstElement = theArray[0];
+        shift(theArray)
+        eq(firstElement, undefined)
+    },
+    'It should be usd with apply to object resembling arrays': function () {
+        fail();
+    },
+});
+</script>

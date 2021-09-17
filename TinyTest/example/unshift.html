@@ -1,0 +1,95 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// function signature 
+
+// arr.shift()
+
+// parameter shift: array
+
+// The removed element from the array; undefined if the array is empty.
+
+// Expextations
+
+// 1. It should return the new length of the array using one element
+// 2. It should return the length of the array using more then one element
+// 3. It should shift the original array elements to the end of the array
+// 4. It should add the added elements to the front of the array
+// 5. It should add new element in first postion of array
+// 6. It should add multiple elements to the front of the array
+// 7. It should throw an error when unshift is called upon no array objects
+
+function unshift(array, element) {
+
+  if(Array.isArray(array) === false) {
+     throw new TypeError('I am not an array');
+   }
+
+   var length = array.length;
+   var elementsLength = arguments.length - 1;
+
+   array.length = array.length + elementsLength;
+   
+   var endArray = array.length - 1;
+
+   for(var i = endArray; i >= 0; i--) {
+     array[i] = array[i - elementsLength]
+   }
+
+   for(var j = 0; j < elementsLength; j++) {
+     array[j] = arguments[j + 1];
+   }
+
+
+  return array.length;
+}
+
+
+
+tests({
+
+  'It should return the new length of the array using one element': function () {
+    var testArray = [2];
+    unshift(testArray, 1)
+    eq(testArray.length, 2)
+  },
+  'It should return the length of the array using more then one element': function () {
+    var testArray = [3]
+    unshift(testArray, 1, 2)
+    eq(testArray.length, 3)
+  },
+  'It should shift the original array elements to the end of the array': function () {
+    var testArray = [3];
+    unshift(testArray, 1, 2);
+    eq(testArray[2], 3)
+  },
+  'It should add the added elements to the front of the array': function () {
+    var testArray = [2, 3];
+    unshift(testArray, 1);
+    eq(testArray[1], 2)
+    eq(testArray[2], 3)
+  },
+  'It should add new element in first postion of array': function () {
+    var testArray = [2, 3]
+    unshift(testArray, 1)
+    eq(testArray[0], 1)
+  },
+  'It should add multiple elements to the front of the array': function () {
+    var testArray = [3]
+    unshift(testArray, 1, 2)
+    eq(testArray[0], 1)
+    eq(testArray[1], 2)
+  },
+  'It should throw an error when unshift is called upon no array objects': function () {
+    var testArray = 1;
+    var element = 1;
+    var isTypeError = false; 
+    try{
+      unshift(testArray, element)
+    } catch(e) {
+      isTypeError = (e instanceof TypeError);
+    }
+    eq(isTypeError, true)
+  }
+});
+</script>

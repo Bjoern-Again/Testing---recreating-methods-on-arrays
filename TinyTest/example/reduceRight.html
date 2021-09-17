@@ -1,0 +1,303 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// function signature 
+
+// arr.reduceRight(callback(accumulator, currentValue[, index[, array]])[, initialValue])
+
+// parameter every: array, callback, initalValue
+// parameter callback: accumulator, currentValue, index, originalArray
+// Returns a boolean value 
+
+// The reduceRight() method applies a function against an accumulator and 
+// each value of the array (from right-to-left) to reduce it to a 
+// single value.
+
+// Expecatations:
+
+// 1.
+// If initialValue, callback should run array.length times
+
+// runCallback = 0;
+// testArray.reduceRight(function (){
+// runCallback++;
+// console.log('hi')
+// }, 0);
+// output: 3 x hi
+
+// 2.
+// If no initalValue, callback should run array.length one less times
+
+// runCallback = 0;
+// testArray.reduceRight(function (){
+// runCallback++;
+// console.log('hi')
+// });
+// output: 2 x hi
+
+// 3.
+// If initialValue, previousValue should start initalValue
+
+// [1].reduceRight(function (previousValue){
+//   return previousValue;
+// }, 0);
+// output: 0
+
+// 4.
+// If initialValue, currentValue should start with last value of array
+
+// var previousValue = 0;
+// [1].reduceRight(function (previousValue, currentValue) {
+//   return currentValue;
+// }, 0);
+// output: 1
+
+// 5.
+// If initialValue, currentIndex should start with last value of array
+
+// [1].reduceRight(function (previousValue, currentValue, index){
+//   return index;
+//  }, 0);
+// output: 0;
+
+// 6.
+// If no initialValue, previousValue should start at last value of array
+
+// var previousValue = 0;
+// [1, 2].reduceRight(function (previousValue, currentValue) {
+//   return previousValue;
+// });
+// 2
+
+// 7.
+// If no initialValue, currentValue should start at second last value
+
+// [1, 2].reduceRight(function (add, currentElement) {
+//   return currentElement;
+// });
+// output: 1
+
+// 8.
+// If no initialValue, currentIndex should start with secound last index
+
+// [1, 2].reduceRight(function (previousValue, currentValue, index){
+//   return index;
+// });
+// output: 0 this is currentT value 1 
+
+// 9.
+// It should pass in original array as fourth argument of the callback
+// var testArray = [1, 2, 3];
+// testArray.reduceRight(function (previousValue, currentValue, CurrentIndex, originalArray) {
+//  return testArray === originalArray; 
+// });
+// output: true
+
+// 10.
+// It should reduce from right 
+
+// [1, 2, 3].reduceRight(function (a, b) {
+//   return a + b;
+// });
+// output: 6
+
+// 11.
+// If no iniitalValue and array is empty, typeError should be thrown
+
+// [].reduceRight(function () {});
+//  Uncaught TypeError: Reduce of empty array with no initial value at Array.reduceRight
+
+// 12.
+// If no initialValue and array has only one number, that number should be return wihout calling callback
+
+// var runCallback = 0
+// [1].reduceRight(function(add, num) {
+//   runCallback++;
+// });
+// 1
+
+// 13.
+// If no initialValue and array has only one number in differnet position, that number should be returned without calling callbck
+
+// var runCallback = 0;
+// [, 1].reduceRight(function(add, num) {
+//   runCallback++;
+// });
+// 1
+
+// 14.
+// If initalValue but array is empty, initialValue should be returned
+
+// [].reduceRight(function () {}, 0);
+// 0
+
+// 15.
+// If initialValue it should run without holes
+
+// [1, 2, , 4].reduceRight(function (add, num) {
+//    return add + num;
+// });
+// 7
+
+// 16.
+// If no initialValue, it should run without hole
+
+// [1, 2, , 4].reduceRight(function (add, num) {
+//    return add + num;
+// }, 0);
+// 7
+
+
+function reduceRight(array, callback, initialValue) {
+
+    var startingIndex = array.length - 1;
+    var resultSoFar = initialValue;
+    var arrayIndexes = Object.keys(array);
+
+    if(arguments.length < 3) {
+
+
+    if (arrayIndexes.length === 0) {
+      throw new TypeError('reduceRight of empty with no inital value');
+    }
+
+    
+
+    
+ 
+    if (Object.keys(array).length === 1) {
+      var singleIndex = Object.keys(array)[0];
+      var singleElement = array[singleIndex];
+      return singleElement;
+    }
+
+    while (startingIndex in array === false && startingIndex > 0) {
+      startingIndex--;
+    }
+
+    resultSoFar = array.length;
+     startingIndex--; 
+
+
+
+    }
+
+    for(var i = startingIndex; i >= 0; i--) {
+    
+    if(i in array){
+      resultSoFar = callback(resultSoFar, array[i], i, array)
+     }
+    }
+  return resultSoFar;
+}
+
+
+
+
+tests({
+'If initialValue, callback should run from right to left array.length times': function() {
+    var runCallback = 0;
+    reduceRight([1, 2, 3], function () {
+    runCallback++;
+    }, 0);
+    eq(runCallback, 3);
+},
+'If no initalValue, callback should run from right to left array.length one less times': function() {
+    runCallback = 0;
+    reduceRight([1, 2, 3], function (){
+      runCallback++;
+    });
+    eq(runCallback, 2);
+},
+'If initialValue, previousValue should equal initalValue': function() {
+    reduceRight([1], function (previousValue){
+      eq(previousValue, 0);
+    }, 0);
+},
+'If initialValue, currentValue should equal array[0] ': function() {
+    reduceRight([1], function (previousValue, currentValue) {
+      eq(currentValue, 1)
+    }, 0);
+},
+'If initialValue, currentIndex should start with last value of array': function () {
+    reduceRight([1], function (previousValue, currentValue, index){
+      eq(index, 0);
+    }, 0);
+},
+'If no initialValue, previousValue should equal last value of array': function() {
+    reduceRight([1, 2], function (previousValue, currentValue) {
+      eq(previousValue, 2);
+    });
+},
+'If no initialValue, currentValue should equal second last value': function() {
+    reduceRight([1, 2], function (previousValue, currentElement) {
+      eq(currentElement, 1);
+    });
+},
+'If no initialValue, currentIndex should start with secound last index': function () {
+    reduceRight([1, 2], function (previousValue, currentValue, index){
+      eq(index, 0);
+    });
+},
+'It should pass in original array as fourth argument of the callback': function() {
+    var testArray = [1, 2, 3];
+    testArray.reduceRight(function (previousValue, currentValue, currentIndex, originalArray) {
+      eq(testArray, originalArray); 
+    });
+},
+'It should reduce from right': function() {
+    var result = reduceRight([1, 2, 3], function (a, b) {
+    return a + b;
+    }, 0);
+    eq(result, 6);
+},
+'If no initialValue and array has only one number, that number should be return without calling callback': function() {
+    var runCallback = 0
+    var returnNum = reduceRight([1], function(previousValue, currentValue) {
+      runCallback++;
+    });
+    eq(runCallback, 0);
+    eq(returnNum, 1);
+},
+'If no initialValue and array has only one number in differnet position, that number should be returned without calling callback': function() {
+    var runCallback = 0;
+    var numArray = reduceRight([, 1], function(previousValue, currentValue) {
+      runCallback++;
+    });
+    eq(runCallback, 0);
+    eq(numArray, 1);
+},
+'If no iniitalValue and array is empty, typeError should be thrown': function() { 
+    var isTypeError = false;
+    try {
+      reduceRight([], function() {});
+    } catch(e) {
+      isTypeError = (e instanceof TypeError);
+    }
+    eq(isTypeError, true);
+},
+'If initalValue but array is empty, initialValue should be returned without calling the callBack': function() {
+    var initialValue = 0;
+    var runCallback = 0;
+    var returnInitial = reduceRight([], function () {
+      runCallback++
+    }, initialValue);
+    eq(runCallback, 0);
+    eq(initialValue, 0);
+},
+'If initialValue it should run without holes': function() {
+    var result = reduceRight([1, 2, , 4], function(previousValue, currentValue) {
+     return previousValue + currentValue;
+    }, 0);
+    eq(result, 7);
+},
+'If no initialValue, it should run without hole': function () {
+    var result = reduceRight([1, 2, , 4], function(previousValue, currentValue) {
+    return previousValue + currentValue;
+    });
+    eq(result, 7)
+},
+
+});
+
+</script>

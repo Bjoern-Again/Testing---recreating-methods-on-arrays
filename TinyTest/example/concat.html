@@ -1,0 +1,112 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// function signature 
+
+// const new_array = old_array.concat([value1[, value2[, ...[, valueN]]]])
+
+// parameter concat: array,
+// parameter callback: value1, value2, valueN
+// Returns new array
+
+// A new Array instance
+
+// Expectations
+
+// 1. It should return an array
+// 2. It should return a new array from orginal array
+// 3. It should create a new array from concating originalArray with 1st argument
+// 4. It should create a new array from concating originalArray with multiple argument
+// 5. It should create a new array from concating original array with arrays in argument
+// 6. It should concat various data types into new array 
+// 7. It should concat nested arrays
+// 8. It should not alter this origianlArray
+
+
+
+function concat(array, value1, value2) {
+
+    var concatArray = [];
+
+
+    // creating a new array from original array
+    for(var i = 0; i < array.length; i++) {
+      concatArray.push(array[i]);
+    }
+
+    // finding values in argument
+    for(var v = 1; v < arguments.length; v++) {
+    var value = arguments[v];
+
+      // checks if value is array
+    if(Array.isArray(value)) {
+      for(var j = 0; j < value.length; j++) {
+        concatArray.push(value[j]);
+      }
+    } else {
+        concatArray.push(value);
+      }
+    }
+ return concatArray;
+}
+
+tests({
+    'It should return an array': function () {
+        var concatArray = concat([]);
+        eq(Array.isArray(concatArray), true);
+    },
+    'It should return a new array from exsisting array': function () {
+        var originalArray = [];
+        var concatArray = concat(originalArray)
+        eq(originalArray !== concatArray, true);
+    },
+    'It should create a new array from concating originalArray': function () {
+        var originalArray = [1];
+        var concatArray = concat(originalArray)
+        eq(concatArray[0], 1);
+    },
+    'It should create a new array from concating originalArray with one additional argument': function () {
+        var originalArray = [1];
+        var value = 2;
+        var concatArray = concat(originalArray, value)
+        eq(concatArray.length, 2);
+    },
+    'It should create a new array from concating originalArray with two additional argument': function () {
+        var originalArray = [1];
+        var value1 = 2;
+        var value2 = 3;
+        var concatArray = concat(originalArray, value1, value2)
+        eq(concatArray.length, 3);
+    },
+    'It should create a new array from concating original array with arrays in argument': function () {
+        var originalArray = [1, 2];
+        var value1 = [3, 4];
+        var value2 = [5, 6]; 
+        var concatArray = concat(originalArray, value1, value2)
+        eq(concatArray.length, 6);
+        eq(concatArray[0], 1);
+        eq(concatArray[1], 2);
+        eq(concatArray[2], 3);
+        eq(concatArray[3], 4);
+        eq(concatArray[4], 5);
+        eq(concatArray[5], 6);
+    },
+    'It should concat various data types into new array ': function () {
+        var originalArray = [1];
+        var value1 = 'three';
+        var value2 = true;
+        var concatArray = concat(originalArray, value1, value2)
+        eq(concatArray[0], 1);
+        eq(concatArray[1], 'three');
+        eq(concatArray[2], true);
+    },
+    'It should not alter this origianlArray': function () {
+        var testArrayOne = [1, 2];
+        var testArrayTwo = [3, 4]; 
+        var concatArray = concat(testArrayOne, testArrayTwo);
+        eq(concatArray === testArrayOne, false);
+        eq(concatArray === testArrayTwo, false);
+    },
+});
+
+</script>

@@ -1,0 +1,117 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// function signature 
+
+// arr.fill(value[, start[, end]])
+
+// parameter shift: array, value, start, end
+
+// The modified array, filled with value.
+
+// Expextations
+
+// 1. It should fill all element in the array with the value given
+// 2. It should fill all elements in the array from the starting value
+// 3. It should fill all elements till the end value if given 
+// 4. If no starting value, default starting value is at index 0
+// 5. If starting value is negative then starting value is array.length + start
+// 6. If end value is negative then end value is array.length + end
+// 7. It should not copie the array
+// 8. If the first parameter is an object, each slot in the array will reference that object.
+
+function fill(array, value, startingValue, endValue) {
+
+    var startingIndex = 0;
+    var endIndex = array.length;
+
+    if(startingValue) {
+      startingIndex = startingValue;
+    }
+
+    if(endValue) {
+      endIndex = endValue;
+    }
+
+    if(startingValue < 0) {
+      startingIndex = array.length + startingValue;
+    }
+
+    if(endValue < 0) {
+      endIndex = array.length + endValue; 
+    }
+
+    for(var i = startingIndex; i < endIndex; i++) {
+      array[i] = value;
+    }
+
+return array; 
+}
+
+
+
+tests({
+    'It should fill all element in the array with the value given': function () {
+        var testArray = [1, 2];
+        var value = 3;
+        fill(testArray, value)
+        eq(testArray[0], 3)
+        eq(testArray[1], 3)
+    },
+    'It should fill all elements in the array from the starting value': function () {
+        var testArray = [1, 2, 3, 4];
+        var value = 3;
+        fill(testArray, value, 1)
+        eq(testArray[0], 1)
+        eq(testArray[1], 3)       
+    },
+    'It should fill all elements till the end value if given': function () {
+        var testArray = [1, 2];
+        var value = 3;
+        fill(testArray, value, 0, 1)
+        eq(testArray[0], 3)
+        eq(testArray[1], 2)
+    },
+    'If no starting value, default starting value is at index 0': function () {
+        var testArray = [1, 2];
+        var value = 3;
+        fill(testArray, value, undefined, 2)
+        eq(testArray[0], 3)
+        eq(testArray[1], 3)
+    },
+    'If starting value is negative then starting value is array.length + start': function () {
+      var testArray = [1, 2, 3, 4];
+      var value = 4;
+      var startingValue = -2;
+      fill(testArray, value, startingValue)
+      eq(testArray[0], 1)
+      eq(testArray[1], 2)
+      eq(testArray[2], 4)
+      eq(testArray[3], 4)
+    },
+    'If end value is negative then end value is array.length + end': function () {
+      var testArray = [1, 2, 3, 4];
+      var value = 4;
+      var startingValue = 0;
+      var endValue = -2;
+      fill(testArray, value, startingValue, endValue)
+      eq(testArray[0], 4)
+      eq(testArray[1], 4)
+      eq(testArray[2], 3)
+      eq(testArray[3], 4)
+    },
+    'It should not copy the array': function () {
+      var testArray = [1];
+      var value = 2;
+      var fillArray = fill(testArray, value)
+      eq(testArray, fillArray)
+    },
+    'If the first parameter is an object, each slot in the array will reference that object.': function () {
+      var testArray = [1, 2];
+      var testObject = {car: 'Toyota'};
+      fill(testArray, testObject, 0, 1)
+      eq(testArray[0], testObject)
+      eq(testArray[1], 2)
+    }
+});
+</script>

@@ -1,0 +1,118 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// function signature 
+
+// arr.slice([start[, end]])
+
+// parameter lastIndexOf: array, start, end
+
+// The slice() method returns a shallow copy of a portion of 
+// an array into a new array object selected from start to end 
+// (end not included) where start and end represent the index of 
+// items in that array. The original array will not be modified.
+
+// Expextations
+
+// 1. It should return a new array
+// 2. It should not modify the original array
+// 3. It should shallow copy a value of an array into the new array
+// 4. Start should ba able to take a negative index indicating an offset from the end of the sequence
+// 5. If start is undefined, slice starts from index 0
+// 6. If start is > than array, an empty array is returned
+// 7. It should include an optional end selector
+// 8. End should be able to take a negative index, indicating an offset from the end of the sequence
+// 9. If end is greater than the length of the sequence, slice extracts through to the end of the sequence (arr.length)
+// 10. It should return an empy array when both start and end are 0
+
+
+
+function slice(array, start, end) {
+
+
+    var slicedArray = [];
+    var endArray = array.length;
+
+    if(end) {
+      endArray = end;
+    }
+
+    if(start < 0) {
+      start = array.length + start; 
+    }
+
+    if(end < 0) {
+      endArray = array.length + end;
+    }
+
+    if(end > array.length) {
+      slicedArray = array;
+      return slicedArray;
+    }
+
+    if(start === undefined) {
+      start = 0; 
+    }
+
+    if(start > array.length) {
+      return [];
+    }
+
+    if(start === 0 && end === 0) {
+      slicedArray = 0;
+      return slicedArray;
+    }
+
+
+
+    for(var i = start; i < endArray; i++) {
+        slicedArray.push(array[i]);
+    }
+      
+return slicedArray;
+}
+
+tests({
+    'It should return a new array': function () {
+        var slicedArray = slice([1, 2], 0);
+        eq(Array.isArray(slicedArray), true); 
+    },
+    'It should not modify the original array': function () {
+        var arrayBeingSliced = [];
+        var slicedArray = slice(arrayBeingSliced, function () {});
+        eq(slicedArray !== arrayBeingSliced, true)
+    },
+    'It should shallow copy a value of an array into the new array': function () {
+        var slicedArray = slice([1, 2], 1)
+        eq(slicedArray, 2);
+    },
+    'Start should be able to take a negative index indicating an offset from the end of the sequence': function () {
+        var slicedArray = slice([1, 2], -1)
+        eq(slicedArray, 2);
+    },
+    'If start is undefined, slice starts from index 0': function () {
+        var slicedArray = slice([1], undefined)
+        eq(slicedArray, 1);
+    },
+    'If start is > than array, an empty array is returned': function () {
+        var slicedArray = slice([1], 2)
+        eq(slicedArray, 0);
+    },
+    'It should include an optional end selector': function () {
+        var slicedArray = slice([1, 2], 0, 1)
+        eq(slicedArray, 1);
+    },
+    'End should be able to take a negative index, indicating an offset from the end of the sequence': function () {
+        var slicedArray = slice([1, 2, 3], 0, -2)
+        eq(slicedArray, 1);
+    },
+    'If end is greater than the length of the sequence, slice extracts through to the end of the sequence (arr.length)': function () {
+        var slicedArray = slice([1], 0, 2)
+        eq(slicedArray, 1)
+    },
+    'It should return an empy array when both start and end are 0': function () {
+        var slicedArray = slice([1, 2], 0, 0)
+        eq(slicedArray, 0)
+    },
+});
+</script>

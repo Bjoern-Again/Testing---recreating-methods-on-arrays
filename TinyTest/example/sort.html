@@ -1,0 +1,161 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// function signature 
+
+// arr.sort([compareFunction])
+
+// parameter shift: array, compareFunction, firstEl, secondEl
+
+// Return value: The sorted array. Note that the array is sorted in place, and no copy is made.
+
+// Expextations
+
+// 1. 'It should sort according to UTF 16'
+// 2. 'It should sort in Alphabatic order'
+// 3. 'It should sort booleans into ascending order'
+// 4. 'It should sort capital letters, letters and number'
+// 5. 'It should sort undefined to the end of the array'
+// 6. 'It should mutate the original array and not copy it'
+// 7. 'If compareFunction is supplied, all undefined elements are sorted to the end of the array, with no call to compareFunction'
+// 8. 'If compareFunction(a, b) returns less than 0, sort a to an index lower than b'
+// 9. 'If compareFunction(a, b) returns 0, leave a and b unchanged with respect to each other, but sorted with respect to all different elements'
+// 10. 'If compareFunction(a, b) returns greater than 0, sort b to an index lower than a.'
+// 11. 'If compareFunction(a, b) sort object specific vairable'
+
+
+function sort(array, compareFunction) {
+
+    var length = array.length;
+    var count = 0;
+    var endArray = array.length - 1;
+
+
+
+    for(var i = endArray; i >= 0; i--) {
+      if(array[i] === undefined) {
+        count++;
+        [array[i], array[array.length - count]] = [array[array.length - count], array[i]]; 
+      }
+    }   
+
+    for(var i = 0; i < array.length; i++) {  
+      for(var j = i + 1; j < length; j++) {
+
+        if(compareFunction) {
+            if(compareFunction(array[i], array[j]) > 0) {
+              [array[j], array[i]] = [array[i], array[j]];
+            }
+        }
+     
+        if(compareFunction === undefined) {
+            if(String(array[i]) > String(array[j])){
+              [array[j], array[i]] = [array[i], array[j]];
+            }
+        }
+      }
+    }
+ 
+
+return array;
+}
+
+tests({
+    'It should sort according to UTF 16': function () {
+        var testArray = [2, 100, 1]
+        sort(testArray)
+        eq(testArray[0], 1)
+        eq(testArray[1], 100)
+        eq(testArray[2], 2) 
+    },
+    'It should sort in Alphabatic order': function () {
+        var testArray = ['c', 'b', 'a']
+        sort(testArray)
+        eq(testArray[0], 'a')
+        eq(testArray[1], 'b')
+        eq(testArray[2], 'c')
+    },
+    'It should sort booleans into ascending order': function () {
+        var testArray = [true, true, false];
+        sort(testArray)
+        eq(testArray[0], false)
+        eq(testArray[1], true)
+        eq(testArray[2], true)
+    },
+    'It should sort capital letters, letters and number': function () {
+        var testArray = ['hello', 'B', 2, 'again']
+        sort(testArray)
+        eq(testArray[0], 2)
+        eq(testArray[1], 'B')
+        eq(testArray[2], 'again')
+        eq(testArray[3], 'hello')
+    },
+    'It should sort undefined to the end of the array': function () {
+        var testArray = [2, 100, undefined, 4]
+        sort(testArray)
+        eq(testArray[0], 100)
+        eq(testArray[1], 2)
+        eq(testArray[2], 4)
+        eq(testArray[3], undefined)
+    },
+    'It should mutate the original array and not copy it': function () {
+        var testArray = [1, 2]
+        var sortedArray = sort(testArray)
+        eq(testArray, sortedArray)
+    },    
+    'If compareFunction is supplied, all undefined elements are sorted to the end of the array, with no call to compareFunction': function () {
+        var numbers = [222, undefined, 1]
+        sort(numbers, function(a, b){
+          return a - b;
+        });
+        eq(numbers[0], 1)
+        eq(numbers[1], 222)
+        eq(numbers[2], undefined)
+    },
+    'If compareFunction(a, b) returns less than 0, sort a to an index lower than b': function () {
+        var numbers = [222, 33, 1]
+        sort(numbers, function(a, b){
+          return a - b;
+        });
+        eq(numbers[0], 1)
+        eq(numbers[1], 33)
+        eq(numbers[2], 222)
+    },
+    'If compareFunction(a, b) returns 0, leave a and b unchanged with respect to each other, but sorted with respect to all different elements': function () {
+      var numbers = [222, 33, 1]
+        sort(numbers, function(a, b){
+          return 0;
+        });
+        eq(numbers[0], 222)
+        eq(numbers[1], 33)
+        eq(numbers[2], 1)
+    },
+    'If compareFunction(a, b) returns greater than 0, sort b to an index lower than a.': function () {
+        var numbers = [222, 1, 33]
+        sort(numbers, function(a, b){
+          return b - a;
+        });
+        eq(numbers[0], 222)
+        eq(numbers[1], 33)
+        eq(numbers[2], 1)
+    },
+    'If compareFunction(a, b) sort object specific vairable': function () {
+        var officeWorkers = [
+        {name: 'Thomas', age: 37},
+        {name: 'Paul', age: 30},
+        {name: 'David', age: 27}
+        ]
+        sort(officeWorkers, function(a, b) {
+          return a.age - b.age; 
+        });
+        eq(officeWorkers[0].age, 27)
+        eq(officeWorkers[1].age, 30)
+        eq(officeWorkers[2].age, 37)
+    }
+});
+</script>
+
+
+
+
+

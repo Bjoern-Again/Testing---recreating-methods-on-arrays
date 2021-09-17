@@ -1,0 +1,109 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// function signature
+
+// arr.findIndex(callback( element[, index[, array]] )[, thisArg])
+
+// Parameter findIndex: array, callback, thisArg
+// Parameter callback: currentElement, index position, original Array
+// Returns: index of array
+
+
+
+// 1. It should run callback array.length times
+// 2. It should run the currentElement as the first argument of the callback
+// 3. It should run the index position as the secound argument of the callback'
+// 4. It should run the original array as the third argument as callback 
+// 5. It should run an optinal this argument
+// 6. It should run callback once on for every index in the array until the callback returns truthy value
+// 7. It should run return -1 when array.length is 0 or there is no truthy value
+// 8. It should run callback on all values of the array
+// 9. callback should not process the elements appended to the array after the call to findIndex() begins
+
+function findIndex(array, callback, thisArg) {
+
+  var findIndexCallback = callback;
+  var length = array.length;
+
+  findIndexCallback = callback.bind(thisArg);
+
+  for (var i = 0; i < length; i++)
+    if (findIndexCallback(array[i], i, array)) {
+      return i;
+    }
+  return -1; 
+}
+
+
+tests({
+'It should run callback array.length times':function () {
+    var callbackHasRun = 0;
+    findIndex([1, 2, 3], function() {
+      callbackHasRun++;
+    });
+    eq(callbackHasRun, 3);
+},
+'It should run the currentElement as the first argument of the callback':function () {
+    findIndex([1], function(currentElement) {
+      eq(currentElement, 1);
+    });
+},
+'It should run the index position as the secound argument of the callback':function () {
+    findIndex([0], function(currentElement, index) {
+      eq(index, 0);
+    });
+},
+'It should run the original array as the third argument as callback ':function () {
+    testArray = [1, 2, 3];
+    findIndex(testArray, function(currentElement, index, originalArray) {
+      eq(testArray, originalArray);
+    });
+},
+'It should run an optinal this argument':function () {
+    findIndex([1], function() {
+      eq(this.description, 'It is me the optional this object');
+    }, {description: 'It is me the optional this object'});
+},
+'It should run callback once on for every index in the array until the callback returns truthy value':function () {
+    var testArray = [1, 2, 3];
+    var foundIndex = findIndex(testArray, function(currentElement, index) {
+      return index > 1;
+    });
+    eq(foundIndex, 2)
+},
+'It should return -1 when array.length is 0':function () {
+  var noArray = [0];
+    var lostIndex = findIndex(noArray, function(currentElement, index) {
+      return index < 0;
+    });
+    eq(lostIndex, -1)
+},
+'It should return -1 if there is no truthy value':function () {
+    var noArray = [1, 2];
+    lostIndex = findIndex(noArray, function(currentElement, index) {
+      return index > 2;
+    });
+    eq(lostIndex, -1);
+},
+'It should run callback on all values of the array':function () {
+    var holeArray = [1, , 3];
+    var callbackHasRun = 0;
+    findIndex(holeArray, function() {
+      callbackHasRun++
+    }); 
+    eq(callbackHasRun, 3)
+},
+'callback should not process the elements appended to the array after the call to findIndex() begins':function () {
+    var testArray = [1, 2];
+    callbackHasRun = 0;
+    findIndex(testArray, function(currentElement, index) {
+      callbackHasRun++;
+      testArray.push(3);
+      return index === 3;
+    });
+    eq(callbackHasRun, 2)
+},
+});
+
+</script>

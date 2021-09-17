@@ -1,0 +1,66 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// function signature 
+
+// arrName.pop()
+
+// parameter pop: array
+
+// Returns: The removed element from the array; 
+// undefined if the array is empty.ed.
+
+// Expextations
+
+// 1. It should remove last element from an array 
+// 2. It should return the last element
+// 3. It should be used with call() or apply on objects resembling arrays
+// 4. It should return undefined on empty arrays
+// 5. If holes return undefined
+
+function pop(array) {
+
+    var endArray = array.length - 1;
+    var endValue = array[endArray]; 
+    
+    for(var i = 0; i < array.length; i++) {
+        array.length = endArray; 
+    }
+return endValue; 
+}
+
+
+
+
+tests({
+    'It should remove last element from an array': function() {
+        var popArray = [1, 2];
+        pop(popArray)
+        eq(popArray, 1)
+    },
+    'It should return the last element': function() {
+        var popArray = [1, 2, 3];
+        var endArray = popArray.length -1;
+        var endValue = popArray[endArray]
+        pop(popArray)
+        eq(endValue, 3)
+    },
+    'It should be used with call() or apply on objects resembling arrays': function() {
+        fail();
+    },
+    'It should return undefined on empty arrays': function() {
+        var popArray = [];
+        var endArray = popArray.length -1;
+        var endValue = popArray[endArray]
+        pop(popArray)
+        eq(endValue, undefined)
+    },
+    'If holes return undefined': function () {
+        var popArray = [,,];
+        var endArray = popArray.length -1;
+        var endValue = popArray[endArray]
+        pop(popArray)
+        eq(endValue, undefined)
+    }
+});
+</script>

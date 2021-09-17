@@ -1,0 +1,93 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// function signature 
+
+// arr.join([separator])
+
+// parameter join: array, separator
+// Returns new array
+
+// A new Array instance
+
+// Expectations
+
+// 1. It should return and create a new string
+// 2. If no separator, it should have commas between elements 
+// 3. If only one item in array, it should return item without separator 
+// 4. If separator, it should concatenating all element in an array with separator 
+// 5. If holes and separator, speparator is added to hole
+// 6. If separator is empty string, it should join elements without characters 
+// 7. If element is undefined, null or an empty array [], it should return an empty string
+
+function join(array, separator) {
+  
+  var string = '';
+
+
+
+  if(arguments.length === 1) {
+    separator = ',';
+  }
+  
+
+  if(!separator) {
+    var separator = string;  
+  }
+
+  for(var i = 0; i < array.length; i++) {
+
+    if(array[i] === undefined || array[i] === null) {
+      array[i] = ''; 
+    }  
+    
+    string += array[i];
+
+    if(i < array.length - 1) {
+      string += separator;  
+    }
+  }
+
+
+return string;
+}
+
+tests({
+    'It should return and create a new string': function() {
+        var returnString = join([1])
+        eq(typeof returnString, 'string');
+    },
+    'If no separator, it should have commas between elements': function() {
+        var returnString = join([1, 2])
+        eq(returnString, '1,2')
+    },
+    'If only one item in array, it should return item without separator': function() {
+        var returnString = join(['one'])
+        eq(returnString, 'one')
+    },
+    'If separator, it should concatenating all element in an array with separator': function() {
+        var array = [1, 2];
+        var returnString = join(array, '+')
+        eq(returnString, '1+2')
+    },
+    'If holes and separator, speparator is added to hole': function() {
+        var array = [1,,2]
+        var returnString = join(array, '+')
+        eq(returnString, '1++2')
+    },
+    'If separator is empty string, it should join elements without characters': function() {
+        var array = [1, 2];
+        var returnString = join(array, '')
+        eq(returnString, '12')
+    },
+    'If element is undefined, null or an empty array [], it should return an empty string': function() {
+        var nullArray = [null]
+        var emptyArray = [];
+        var returnNullString = join(nullArray)
+        var retrunEmptyString = join(emptyArray)
+        eq(returnNullString, '')
+        eq(retrunEmptyString, '')
+    }
+});
+
+</script>

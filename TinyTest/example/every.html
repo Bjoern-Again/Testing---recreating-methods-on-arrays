@@ -1,0 +1,121 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// function signature 
+
+// arr.every(callback(element[, index[, array]])[, thisArg])
+
+// parameter every: array, callback, thisArg
+// parameter callback: currentElement, index, originalArray
+// Returns a boolean value 
+
+// true if the callback function returns a truthy value for every 
+// array element. Otherwise, false.
+
+// Expecatations:
+
+
+// 1. It should run callback array.lenght times on true element
+// 2. It should run callback on array indexes with assigned values
+// 3. It should run callback on the currentElement in the array
+// 4. It should run callback on the index of the array
+// 5. It should run callback on the original Array
+// 6. It should run the optional the argument
+// 7. It should run callback on each element of the array if value false returns falsy value
+// 8. It should run callback on empty array and return true 
+// 9. It should not run callback on appended elements that the callback added after every was called
+
+function every(array, callback, thisArg) {
+  var everyCallback = callback;
+  var length = array.length;
+
+  if (thisArg) {
+    everyCallback = callback.bind(thisArg); 
+  }
+
+  for (var i = 0; i < length; i++) {
+    if (i in array) {
+      if (!everyCallback(array[i], i, array)) {
+        return false; 
+      }
+    }
+  }
+  
+
+  return true;
+}
+
+tests({
+
+'It should run callback array.lenght times on true element and return true': function () {
+  var callbackHasRun = 0;
+  testArray = [1, 2, 3];
+  var returnTrue = every(testArray, function (currentElement) {
+    callbackHasRun++; 
+    return currentElement;
+  });
+    eq(callbackHasRun, 3);
+    eq(returnTrue, true);
+},
+'It should run callback on array indexes with assigned values': function () {
+  var callbackHasRun = 0;
+  var testArray = [1, , , 4];
+  var everyCallback = every(testArray, function (currentElement) {
+    callbackHasRun++;
+    return currentElement <= 4;
+  })
+  eq(callbackHasRun, 2);
+  eq(everyCallback, true);
+},
+'It should run callback on the currentElement in the array': function () {
+  every([1], function (currentElement) {
+    eq(currentElement, 1);
+  });
+},
+'It should run callback on the index of the array': function () {
+  every([1], function (currentElement, index) {
+    eq(index, 0);
+  });
+},
+'It should run callback on the original Array': function () {
+  testArray = [1, 2, 3]
+  every(testArray, function (currentElement, index, originalArray) {
+    eq(testArray, originalArray);
+  });
+},
+'It should run the optional the argument': function () {
+  every([1], function () {
+    eq(this.description, 'I am the optional this argument');
+  }, {description: 'I am the optional this argument'});
+},
+'It should run callback on each element of the array if value false returns falsy value': function () {
+  callbackHasRun = 0;
+  testArray = [1, 2, 3];
+  var returnFalse = every(testArray, function (currentElement, index) {
+    callbackHasRun++;
+    return currentElement < 2; 
+  });
+  eq(callbackHasRun, 2);
+  eq(returnFalse, false);
+},
+'It should run callback on empty array and return true ': function () {
+  var emptyArray = every([], function (currentElement) {
+    return currentElement;
+  });
+  eq(emptyArray, true);
+},
+'It should not run callback on appended elements that the callback added after every was called': function () {
+   var testArray = [1, 2];
+   var callbackHasRun = 0;
+   every(testArray, function(currentElement) {
+     callbackHasRun++;
+     testArray.push(3);
+     return currentElement <= 3;
+    });
+    eq(callbackHasRun, 2)
+},
+
+
+});
+
+</script>

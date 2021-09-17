@@ -1,0 +1,89 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// function signature 
+
+// arr.includes(valueToFind[, fromIndex])
+
+// parameter lastIndexOf: array, valueToFind, fromIndex
+
+// The includes() method determines whether an array includes
+// a certain value among its entries, returning true or false as appropriate.
+
+// Expextations
+
+// 1. It should return a certain value that is true within the array 
+// 2. It should return a certain value that is false within the array
+// 3. It should be case sensitive when comparing strings and characters
+// 4. It should start it's search from index
+// 5. It should return true value from fromIndex
+// 6. It should return false value from array.length + fromIndex
+// 7. Zero is Zero regardless of ngative or positive
+// 8. It should return false when the array is empty
+// 9. It should return false on holes
+
+function includes(array, valueToFind, fromIndex) {
+
+    var startingIndex = 0;
+
+    if(arguments.length === 3) {
+      startingIndex = fromIndex;
+    }
+
+    if (fromIndex < 0) {
+    var startingIndex = array.length + fromIndex;
+    }
+
+    for(var i = startingIndex; i < array.length; i++) {
+      if(valueToFind === array[i]) {
+        return true; 
+      }
+    }
+return false;
+}
+
+tests({
+    'It should return a certain value that is true within the array': function () {
+        var results = includes([1], 1)
+        eq(results, true);
+    },
+    'It should return a certain value that is false within the array': function () {
+        var results = includes([1], 2)
+        eq(results, false);
+    },
+    'It should be case sensitive when comparing strings and characters': function () {
+        var results1 = includes(['a'], 'a')
+        var results2 = includes(['A'], 'a')
+        eq(results1, true);
+        eq(results2, false);
+    },
+    'It should start the search from Index': function () {
+        var results = includes([1, 2, 3], 2, 2)
+        eq(results, false);
+    },
+    'It should return true value from fromIndex': function () {
+        var results = includes([1, 2, 3], 3, 1)
+        eq(results, true);
+    },
+    'It should return false value from array.length + fromIndex': function () {
+        var results = includes([1, 2, 3], 1, -1)
+        eq(results, false);
+    },
+    'Zero is Zero regardless of negative or positive': function () {
+        var results1 = includes([1], 1, -0)
+        var results2 = includes([1], 1, 0)
+        var results3 = includes([1], 1, +0)
+        eq(results1, true);
+        eq(results2, true);
+        eq(results3, true);
+    },
+    'It should return false when the array is empty': function () {
+        var results = includes([], 1)
+        eq(results, false);
+    },
+    'It should return false on holes': function () {
+        var results = includes([,,], 1)
+        eq(results, false);
+    },
+});
+</script>
